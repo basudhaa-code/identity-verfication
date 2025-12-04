@@ -1,5 +1,5 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("./index");
+const { sequelize, DataTypes } = require('./index');
+const Identity = require('./Identity'); // Import Identity for association
 
 const Log = sequelize.define("Log", {
     id: {
@@ -9,7 +9,11 @@ const Log = sequelize.define("Log", {
     },
     identityId: {
         type: DataTypes.UUID,
-        allowNull: false
+        allowNull: false,
+        references: {
+            model: 'Identities',
+            key: 'id'
+        }
     },
     timestamp: {
         type: DataTypes.DATE,
@@ -17,8 +21,11 @@ const Log = sequelize.define("Log", {
     },
     status: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false // 'success' or 'failed'
     }
 });
 
+// Set up association (but export before setting up if needed)
 module.exports = Log;
+
+// The association will be set up in a separate file or after all models are defined

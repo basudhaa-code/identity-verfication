@@ -1,22 +1,27 @@
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
-const sequelize = require("./models/index");
+
+// Import models and associations
+const { sequelize } = require("./models/index");
 const identityRoutes = require("./routes/identityRoutes");
 
-const app = express();
+// Import associations file
+require("./models/associations");
 
-// Middlewares
+const app = express();
 app.use(cors());
 app.use(express.json());
-
-// Routes
 app.use("/api/identity", identityRoutes);
 
-// Connect DB and start server
+// Sync database with associations
 sequelize.sync({ alter: true })
-    .then(() => console.log("Database synced"))
-    .catch(err => console.error("DB sync error:", err));
+    .then(() => {
+        console.log("Database synced with associations");
+    })
+    .catch(err => {
+        console.error("Database sync error:", err);
+    });
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
